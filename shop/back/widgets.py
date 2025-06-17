@@ -28,7 +28,6 @@ class ColoredCheckboxSelectMultiple(CheckboxSelectMultiple):
                     checkbox_attrs_str
                 )
 
-
                 # Создаем цветной блок
                 option['label'] = format_html(
                     '<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">'

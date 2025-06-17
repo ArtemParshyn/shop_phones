@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/profile.css'%}">
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="#">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index'%}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="#">New Phones</a>
+                <a href="#">Top Models</a>
+                <a href="#">FAQ</a>
+                <a href="#">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <i class="fas fa-shopping-cart cart-icon"></i>
+                <button class="login-btn" href = "{% url 'logout' %}"id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Page -->
+    <div class="account-container">
+        <div class="account-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h3>John Doe</h3>
+                    <p>Member since 2022</p>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-number">$1,245</div>
+                    <div class="stat-label">Spent</div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h4>Account Information</h4>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Email Address</h5>
+                        <p>john.doe@example.com</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Phone Number</h5>
+                        <p>+1 (555) 123-4567</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h5>Primary Address</h5>
+                        <p>123 Main St, Anytown, CA 90210, United States</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h4>Account Actions</h4>
+
+                <div class="form-row" style="margin-top: 1.5rem;">
+                    <button class="btn-secondary" style="flex: 1;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                    <button class="btn-secondary" style="flex: 1;">
+                        <i class="fas fa-lock"></i> Change Password
+                    </button>
+                    <button class="btn"  style="flex: 1;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="account-card" style="background: linear-gradient(135deg, var(--boost-blue) 0%, var(--boost-light-blue) 100%); color: white;">
+            <h3 style="text-align: center; margin-bottom: 1.5rem;">Boost Premium Membership</h3>
+            <div class="info-item">
+                <div class="info-icon" style="background: var(--boost-orange);">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="info-content">
+                    <h5>Exclusive Benefits</h5>
+                    <p>Free shipping, early access to sales, and 10% off all accessories</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon" style="background: var(--promo-green);">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="info-content">
+                    <h5>Special Offers</h5>
+                    <p>Receive personalized deals and promotions</p>
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-icon" style="background: var(--promo-purple);">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="info-content">
+                    <h5>Priority Support</h5>
+                    <p>24/7 dedicated customer service line</p>
+                </div>
+            </div>
+
+            <button class="btn" style="width: 100%; margin-top: 1.5rem; background: white; color: var(--boost-blue);">
+                Upgrade to Premium
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="#">Apple iPhone</a></li>
+                    <li><a href="#">Samsung Galaxy</a></li>
+                    <li><a href="#">Google Pixel</a></li>
+                    <li><a href="#">Motorola</a></li>
+                    <li><a href="#">OnePlus</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>My Account</h3>
+                <ul>
+                    <li><a href="#">Orders</a></li>
+                    <li><a href="#">Payment Methods</a></li>
+                    <li><a href="#">Addresses</a></li>
+                    <li><a href="#">Account Settings</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                window.location.href = '{% url 'logout'%}';
+            });
+
+            // Logout from profile page
+            document.querySelector('.btn .fa-sign-out-alt').closest('button').addEventListener('click', function() {
+                window.location.href = '{% url 'logout'%}';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - Premium Phones & Upgrades</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="#">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index'%}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="#">New Phones</a>
+                <a href="#">Top Models</a>
+                <a href="#">FAQ</a>
+                <a href="#">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <i class="fas fa-shopping-cart cart-icon"></i>
+                {% if auth %}
+                    <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
+                {% else %}
+                    <button class="login-btn" onclick="location.href='{% url 'login' %}'">Log in</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Premium Phones. Unbeatable Deals.</h1>
+            <p>Upgrade to the latest smartphones with exclusive Boost Mobile offers and trade-in deals</p>
+            <div class="hero-buttons">
+                <button class="btn">Shop New Releases</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Banner -->
+    <section class="promo-banner">
+        <h2>FLASH SALE: 24 HOURS ONLY!</h2>
+        <p>Get $200 off select flagship phones + FREE shipping + FREE wireless earbuds</p>
+        
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-number">12</div>
+                <div class="countdown-label">HOURS</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number">45</div>
+                <div class="countdown-label">MINUTES</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-number">30</div>
+                <div class="countdown-label">SECONDS</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phone Categories Section -->
+    <section class="categories-section">
+        <div class="categories-container">
+            <h2 style="text-align: center; margin-bottom: 1rem;">Find Your Perfect Phone</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 2rem; color: #666;">
+                Explore our curated collections to find the ideal device for your needs
+            </p>
+            
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Flagship Phones</h3>
+                    <p>Premium performance</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <h3>Camera Experts</h3>
+                    <p>Professional photography</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-battery-full"></i>
+                    </div>
+                    <h3>Long Battery Life</h3>
+                    <p>All-day power</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3>Budget Friendly</h3>
+                    <p>Great value</p>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3>Gaming Phones</h3>
+                    <p>High performance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Phones Section -->
+    <section class="featured-section">
+        <div class="featured-container">
+            <h2 class="popular-phones-title">Popular Phones</h2>
+            <p style="text-align: center; max-width: 700px; margin: 0 auto 2rem; color: #666;">
+                Our customers' favorite smartphones
+            </p>
+            
+            <div class="phones-grid">
+                <!-- Phone 1: iPhone 15 Pro -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">Apple iPhone 15 Pro</div>
+                        <div class="phone-price">$1,099.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> A17 Bionic</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> Triple 48MP Cameras</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.1" Super Retina XDR</div>
+                            <div class="spec-item"><i class="fas fa-bolt"></i> Fast Charging</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+                
+                <!-- Phone 2: Samsung Galaxy S23 -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">Samsung Galaxy S23</div>
+                        <div class="phone-price">$799.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> Snapdragon 8 Gen 2</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Pro Camera</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.1" Dynamic AMOLED</div>
+                            <div class="spec-item"><i class="fas fa-battery-full"></i> 3900mAh</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+                
+                <!-- Phone 3: Google Pixel 8 -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">Google Pixel 8</div>
+                        <div class="phone-price">$699.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> Google Tensor G3</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Dual Camera</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.2" OLED Display</div>
+                            <div class="spec-item"><i class="fas fa-robot"></i> Android 14</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+                
+                <!-- Phone 4: OnePlus 11 -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">OnePlus 11 5G</div>
+                        <div class="phone-price">$699.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> Snapdragon 8 Gen 2</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> Hasselblad Camera</div>
+                            <div class="spec-item"><i class="fas fa-bolt"></i> 100W Fast Charging</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.7" 120Hz Display</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+                
+                <!-- Phone 5: Samsung Galaxy A54 -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">Samsung Galaxy A54</div>
+                        <div class="phone-price">$449.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> Exynos 1380</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Triple Camera</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.4" Super AMOLED</div>
+                            <div class="spec-item"><i class="fas fa-battery-full"></i> 5000mAh</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+                
+                <!-- Phone 6: iPhone SE -->
+                <div class="phone-card">
+                    <div class="phone-image">
+                        <div style="font-size: 3rem; color: #666;">📱</div>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">Apple iPhone SE (3rd Gen)</div>
+                        <div class="phone-price">$429.99</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> A15 Bionic</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> 12MP Camera</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> 4.7" Retina HD</div>
+                            <div class="spec-item"><i class="fas fa-bolt"></i> Fast Charging</div>
+                        </div>
+                        
+                        <button class="btn">Latest Purchase</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offer Banner -->
+    <section class="special-offer">
+        <div class="offer-container">
+            <div class="offer-content">
+                <div class="offer-badge">LIMITED TIME OFFER</div>
+                <h2>Trade In Your Old Phone</h2>
+                <h3>Get Up To $800 Off A New One!</h3>
+                <p style="margin: 1.5rem 0;">Upgrade to the latest device and save big when you trade in your eligible smartphone. Instant credit applied at checkout.</p>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div>
+                            <strong>Instant Value Assessment</strong>
+                            <p>See how much your phone is worth in seconds</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div>
+                            <strong>Free Shipping Kit</strong>
+                            <p>We'll send you everything you need to send your device</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Safe & Secure</strong>
+                            <p>Guaranteed data erasure and secure process</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="offer-image">
+                <img class="title_img" src="{% static 'images/tradein.jpg' %}">
+            </div>
+        </div>
+    </section>
+
+    <!-- Upgrade Program Section -->
+    <section class="upgrade-section">
+        <div class="upgrade-container">
+            <div class="upgrade-image">
+                <img class="title_img" src="{% static 'images/boost.jpg' %}">
+            </div>
+            <div class="upgrade-content">
+                <h2>Boost Upgrade Program</h2>
+                <p>Get the latest phone every year with our flexible upgrade program</p>
+                
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Annual Phone Upgrade</strong>
+                            <p>Get a new flagship phone every 12 months</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Device Protection</strong>
+                            <p>Includes damage protection and extended warranty</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div>
+                            <strong>Priority Support</strong>
+                            <p>24/7 dedicated support for upgrade members</p>
+                        </div>
+                    </div>
+                    
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div>
+                            <strong>Exclusive Offers</strong>
+                            <p>Special deals and early access to new releases</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="#">Apple iPhone</a></li>
+                    <li><a href="#">Samsung Galaxy</a></li>
+                    <li><a href="#">Google Pixel</a></li>
+                    <li><a href="#">Motorola</a></li>
+                    <li><a href="#">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Top models</a></li>
+                    <li><a href="#">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+</body>
+</html>

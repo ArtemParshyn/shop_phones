@@ -1,0 +1,42 @@
+/* Убираем стандартные буллеты и отступы */
+ul.checkboxlist {
+    list-style: none;
+    padding-left: 0;
+}
+
+label input{
+    display: contents
+}
+
+/* Стиль для контейнера элементов */
+ul.checkboxlist li {
+    margin-bottom: 5px;
+}
+
+/* Убираем стандартное оформление меток */
+ul.checkboxlist li label {
+    display: none !important;
+}
+
+/* Стиль для цветного блока */
+.colored-block {
+    display: block;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    margin-bottom: 5px;
+    flex-grow: 1;
+}
+
+/* Выделение при наведении */
+.colored-block:hover {
+    outline: 2px solid #333;
+    transform: translateY(-2px);
+}
+
+/* Выделение выбранного элемента */
+ul.checkboxlist li input[type="checkbox"]:checked + .colored-block {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px #79aec8;
+}

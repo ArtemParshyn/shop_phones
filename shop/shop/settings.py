@@ -119,7 +119,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Директория для collectstatic
+STATICFILES_DIRS = [
+    BASE_DIR / "back/static",  # Путь к исходной папке со статикой
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

@@ -23,5 +23,5 @@ from shop import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('back.urls')),
-    path('api/tickets/', include('tickets.urls'))
+    path('tickets/', include('tickets.urls', namespace='tickets'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

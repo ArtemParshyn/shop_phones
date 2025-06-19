@@ -177,6 +177,8 @@
         }
 
         .ticket-priority {
+            display: flex;
+            align-items: center;
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -553,9 +555,8 @@
 
     <script>
     // API Configuration
-    const API_BASE = "/api/";
-    const TICKETS_API = API_BASE + "tickets/";
-    const MESSAGES_API = API_BASE + "messages/";
+    const TICKETS_API = "tickets/";
+    const MESSAGES_API = "tickets/messages/";
     
     // DOM Elements
     const ticketsList = document.getElementById('ticketsList');
@@ -631,33 +632,51 @@
                 <i class="fas fa-exclamation-triangle"></i>
                 <h3>Error</h3>
                 <p>${message || 'Something went wrong'}</p>
-                <button class="btn" style="margin-top: 1rem;" onclick="fetchTickets()">Try Again</button>
+                <button class="btn" style="margin-top: 1rem;" onclick="location.reload()">Try Again</button>
             </div>
         `;
     }
     
     // Utility: Format date
     function formatDate(dateString) {
+        if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleDateString();
     }
     
     // Utility: Format date and time
     function formatDateTime(dateString) {
+        if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleString();
     }
     
-    // Utility: Capitalize first letter
+    // Utility: Capitalize first letter (safe version)
     function capitalizeFirstLetter(string) {
+        if (!string || typeof string !== 'string') return '';
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
     
     // Utility: Clear form errors
     function clearErrors() {
-        document.getElementById('subjectError').style.display = 'none';
-        document.getElementById('descriptionError').style.display = 'none';
-        document.getElementById('replyError').style.display = 'none';
+        const errors = [
+            'subjectError', 
+            'descriptionError', 
+            'replyError'
+        ];
+        
+        errors.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'none';
+                el.textContent = '';
+            }
+        });
+    }
+    
+    // Utility: Safe property access
+    function safeAccess(obj, prop, defaultValue = '') {
+        return obj && obj[prop] ? obj[prop] : defaultValue;
     }
     
     // Fetch tickets from server
@@ -675,14 +694,19 @@
             if (date) params.append('date', date);
             
             const response = await fetch(`${TICKETS_API}?${params.toString()}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
             
-            if (response.ok) {
-                renderTickets(data.tickets);
-            } else {
-                throw new Error(data.message || 'Failed to fetch tickets');
-            }
+            // Handle different response formats
+            const tickets = data.tickets || data;
+            renderTickets(tickets);
         } catch (error) {
+            console.error('Fetch tickets error:', error);
             showError(ticketsList, error.message);
         } finally {
             showLoading(ticketsList, false);
@@ -691,7 +715,7 @@
     
     // Render tickets list
     function renderTickets(tickets) {
-        if (!tickets || tickets.length === 0) {
+        if (!tickets || !Array.isArray(tickets) || tickets.length === 0) {
             ticketsList.innerHTML = `
                 <div class="no-results">
                     <i class="fas fa-ticket-alt"></i>
@@ -704,24 +728,29 @@
         
         ticketsList.innerHTML = '';
 
-
         tickets.forEach(ticket => {
+            const status = safeAccess(ticket, 'status', 'open');
+            const priority = safeAccess(ticket, 'priority', 'medium');
+            const subject = safeAccess(ticket, 'subject', 'No subject');
+            const description = safeAccess(ticket, 'description', 'No description');
+            const createdAt = safeAccess(ticket, 'created_at');
+            
             const ticketEl = document.createElement('div');
             ticketEl.className = 'ticket-item';
             ticketEl.dataset.id = ticket.id;
             ticketEl.innerHTML = `
-                <div class="ticket-status status-${ticket.status}">
-                    <i class="fas fa-circle"></i> ${capitalizeFirstLetter(ticket.status)}
+                <div class="ticket-status status-${status}">
+                    <i class="fas fa-circle"></i> ${capitalizeFirstLetter(status)}
                 </div>
                 
                 <div class="ticket-info">
-                    <div class="ticket-title">${ticket.subject}</div>
-                    <div class="ticket-desc">${ticket.description}</div>
+                    <div class="ticket-title">${subject}</div>
+                    <div class="ticket-desc">${description}</div>
                 </div>
                 
                 <div class="ticket-meta">
-                    <div class="ticket-date">${formatDate(ticket.created_at)}</div>
-                    <div class="ticket-priority priority-${ticket.priority.toLowerCase()}">${capitalizeFirstLetter(ticket.priority)}</div>
+                    <div class="ticket-date">${formatDate(createdAt)}</div>
+                    <div class="ticket-priority priority-${priority.toLowerCase()}">${capitalizeFirstLetter(priority)}</div>
                 </div>
             `;
             
@@ -743,22 +772,33 @@
         try {
             // Fetch ticket details
             const ticketResponse = await fetch(`${TICKETS_API}${ticketId}/`);
-            const ticketData = await ticketResponse.json();
             
             if (!ticketResponse.ok) {
-                throw new Error(ticketData.message || 'Failed to load ticket');
+                const errorData = await ticketResponse.json();
+                throw new Error(errorData.message || `HTTP error! status: ${ticketResponse.status}`);
             }
+            
+            const ticketData = await ticketResponse.json();
+            
+            // Handle different response formats
+            const ticket = ticketData.ticket || ticketData;
             
             // Fetch messages
             const messagesResponse = await fetch(`${MESSAGES_API}?ticket=${ticketId}`);
-            const messagesData = await messagesResponse.json();
             
             if (!messagesResponse.ok) {
-                throw new Error(messagesData.message || 'Failed to load messages');
+                const errorData = await messagesResponse.json();
+                throw new Error(errorData.message || `HTTP error! status: ${messagesResponse.status}`);
             }
             
-            renderTicketDetail(ticketData.ticket, messagesData.messages);
+            const messagesData = await messagesResponse.json();
+            
+            // Handle different response formats
+            const messages = messagesData.messages || messagesData;
+            
+            renderTicketDetail(ticket, messages);
         } catch (error) {
+            console.error('Ticket detail error:', error);
             showError(ticketDetail, error.message);
         } finally {
             showLoading(ticketDetail, false);
@@ -767,19 +807,34 @@
     
     // Render ticket details
     function renderTicketDetail(ticket, messages) {
+        if (!ticket) {
+            showError(ticketDetail, 'Ticket data is missing');
+            return;
+        }
+        
+        const status = safeAccess(ticket, 'status', 'open');
+        const priority = safeAccess(ticket, 'priority', 'medium');
+        const subject = safeAccess(ticket, 'subject', 'No subject');
+        const description = safeAccess(ticket, 'description', 'No description');
+        const category = safeAccess(ticket, 'category', 'other');
+        const createdAt = safeAccess(ticket, 'created_at');
+        const updatedAt = safeAccess(ticket, 'updated_at');
+        
         // Render header
         document.getElementById('ticketHeader').innerHTML = `
             <div>
-                <h2>${ticket.subject}</h2>
-                <div class="ticket-status status-${ticket.status}" style="margin-top: 0.5rem;">
-                    <i class="fas fa-circle"></i> ${capitalizeFirstLetter(ticket.status)}
+                <h2>${subject}</h2>
+                <div class="ticket-status status-${status}" style="margin-top: 0.5rem;">
+                    <i class="fas fa-circle"></i> ${capitalizeFirstLetter(status)}
                 </div>
             </div>
-            <div class="ticket-priority priority-${ticket.priority}">${capitalizeFirstLetter(ticket.priority)} Priority</div>
+            <div class="ticket-priority priority-${priority.toLowerCase()}">
+                ${capitalizeFirstLetter(priority)} Priority
+            </div>
         `;
         
         // Add close button if ticket is open
-        if (ticket.status === 'open' || ticket.status === 'pending') {
+        if (status === 'open' || status === 'pending') {
             const closeBtn = document.createElement('button');
             closeBtn.className = 'btn';
             closeBtn.style.marginLeft = '1rem';
@@ -790,22 +845,20 @@
         
         // Render info
         document.getElementById('ticketInfo').innerHTML = `
-            <p><strong>Created:</strong> ${formatDateTime(ticket.created_at)}</p>
-            <p><strong>Last Updated:</strong> ${formatDateTime(ticket.updated_at)}</p>
-            <p><strong>Category:</strong> ${capitalizeFirstLetter(ticket.category)}</p>
+            <p><strong>Created:</strong> ${formatDateTime(createdAt)}</p>
         `;
         
         // Render description
         document.getElementById('ticketDescription').innerHTML = `
             <h3>Description</h3>
-            <p>${ticket.description}</p>
+            <p>${description}</p>
         `;
         
         // Render conversation
         const conversationEl = document.getElementById('ticketConversation');
         conversationEl.innerHTML = '<h3>Conversation</h3>';
         
-        if (messages.length === 0) {
+        if (!messages || !Array.isArray(messages) || messages.length === 0) {
             conversationEl.innerHTML += `
                 <div class="no-messages">
                     <p>No messages yet. Be the first to reply!</p>
@@ -813,16 +866,22 @@
             `;
         } else {
             messages.forEach(message => {
+                const user = safeAccess(message, 'user', {});
+                const userName = safeAccess(user, 'name', 'Unknown User');
+                const isSupport = safeAccess(message, 'is_support', false);
+                const content = safeAccess(message, 'content', '');
+                const messageCreatedAt = safeAccess(message, 'created_at');
+                
                 const messageEl = document.createElement('div');
-                messageEl.className = message.is_support ? 
+                messageEl.className = isSupport ? 
                     'message support-message' : 'message user-message';
                 messageEl.innerHTML = `
                     <div class="message-header">
-                        <div class="message-user">${message.user.name} (${message.is_support ? 'Support' : 'Customer'})</div>
-                        <div class="message-time">${formatDateTime(message.created_at)}</div>
+                        <div class="message-user">${userName} (${isSupport ? 'Support' : 'Customer'})</div>
+                        <div class="message-time">${formatDateTime(messageCreatedAt)}</div>
                     </div>
                     <div class="message-content">
-                        <p>${message.content}</p>
+                        <p>${content}</p>
                     </div>
                 `;
                 conversationEl.appendChild(messageEl);
@@ -831,68 +890,71 @@
         
         // Show/hide reply section based on status
         document.getElementById('replySection').style.display = 
-            ticket.status === 'closed' || ticket.status === 'resolved' ? 'none' : 'block';
+            status === 'closed' || status === 'resolved' ? 'none' : 'block';
     }
     
     // Create new ticket
     async function createNewTicket(e) {
-    e.preventDefault();
-    clearErrors();
-    
-    const subject = document.getElementById('ticketSubject').value;
-    const priority = document.getElementById('ticketPriority').value;
-    const category = document.getElementById('ticketCategory').value;
-    const description = document.getElementById('newTicketDescription').value;
-    console.log(description)
-    // Validation
-    let valid = true;
-    if (!subject.trim()) {
-        document.getElementById('subjectError').textContent = 'Subject is required';
-        document.getElementById('subjectError').style.display = 'block';
-        valid = false;
-    }
-    if (!description.trim()) {
-        document.getElementById('descriptionError').textContent = 'Description is required';
-        document.getElementById('descriptionError').style.display = 'block';
-        valid = false;
-    }
-    if (!valid) return;
-    
-    const ticketData = {
-        subject,
-        priority,
-        category,
-        description,
-        user_id: currentUser.id
-    };
-    
-    const csrfToken = getCSRFToken();
-    
-    try {
-        const response = await fetch(TICKETS_API, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify(ticketData)
-        });
+        e.preventDefault();
+        clearErrors();
         
-        const data = await response.json();
+        const subject = document.getElementById('ticketSubject').value;
+        const priority = document.getElementById('ticketPriority').value;
+        const category = document.getElementById('ticketCategory').value;
+        const description = document.getElementById('newTicketDescription').value;
         
-        if (response.ok) {
+        // Validation
+        let valid = true;
+        if (!subject.trim()) {
+            const el = document.getElementById('subjectError');
+            el.textContent = 'Subject is required';
+            el.style.display = 'block';
+            valid = false;
+        }
+        if (!description.trim()) {
+            const el = document.getElementById('descriptionError');
+            el.textContent = 'Description is required';
+            el.style.display = 'block';
+            valid = false;
+        }
+        if (!valid) return;
+        
+        const ticketData = {
+            subject,
+            priority,
+            category,
+            description,
+            user_id: currentUser.id
+        };
+        
+        const csrfToken = getCSRFToken();
+        
+        try {
+            const response = await fetch(TICKETS_API, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(ticketData)
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
             // Close modal and refresh list
             newTicketModal.style.display = 'none';
             newTicketForm.reset();
             fetchTickets();
-            alert('Ticket created successfully!');
-        } else {
-            throw new Error(data.message || 'Failed to create ticket');
+        } catch (error) {
+            console.error('Create ticket error:', error);
+            alert(`Error: ${error.message}`);
         }
-    } catch (error) {
-        alert(`Error: ${error.message}`);
     }
-}
     
     // Send reply to ticket
     async function sendReply() {
@@ -925,17 +987,19 @@
                 },
                 body: JSON.stringify(messageData)
             });
-            
+            if (!response.ok) {
+                const errorData = await response.json();
+                
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
             
-            if (response.ok) {
-                // Clear input and refresh ticket view
-                document.getElementById('replyMessage').value = '';
-                showTicketDetail(currentTicketId);
-            } else {
-                throw new Error(data.message || 'Failed to send message');
-            }
+            // Clear input and refresh ticket view
+            document.getElementById('replyMessage').value = '';
+            showTicketDetail(currentTicketId);
         } catch (error) {
+            console.error('Send reply error:', error);
             errorElement.textContent = error.message;
             errorElement.style.display = 'block';
         }
@@ -955,17 +1019,18 @@
                     'X-CSRFToken': csrfToken
                 }
             });
+            //console.log(response.json())
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
             
             const data = await response.json();
             
-            if (response.ok) {
-                // Refresh ticket view
-                showTicketDetail(currentTicketId);
-                alert('Ticket closed successfully!');
-            } else {
-                throw new Error(data.message || 'Failed to close ticket');
-            }
+            // Refresh ticket view
+            showTicketDetail(currentTicketId);
         } catch (error) {
+            console.error('Close ticket error:', error);
             alert(`Error: ${error.message}`);
         }
     }

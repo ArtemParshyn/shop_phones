@@ -17,7 +17,7 @@ class PhoneAdminForm(forms.ModelForm):
 @admin.register(Phone)
 class PhoneAdmin(admin.ModelAdmin):
     form = PhoneAdminForm
-    list_display = ('title', 'cost', 'model')
+    list_display = ('name', 'price', 'brand')
 
     class Media:
         css = {

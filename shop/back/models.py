@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -28,18 +29,34 @@ class Colors(models.Model):
 
 
 class Phone(models.Model):
-    ch = [
-        ("Iphone", "IPhone"),
-        ("Samsung", "Samsung"),
-        ("Xiaomi", "Xiaomi"),
-        ("Redmi", "Redmi"),
-        ("Honor", "Honor")
+    BRAND_CHOICES = [
+        ('Apple', 'Apple'),
+        ('Samsung', 'Samsung'),
+        ('Google', 'Google'),
+        ('OnePlus', 'OnePlus'),
+        ('Motorola', 'Motorola'),
     ]
 
-    title = models.CharField(max_length=64, blank=False, null=False)
-    cost = models.DecimalField(max_digits=6, decimal_places=2, blank=False, null=False, default=0)
-    model = models.CharField(choices=ch, max_length=64, blank=False, null=False, default=False)
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    brand = models.CharField(max_length=50, choices=BRAND_CHOICES)
+    processor = models.CharField(max_length=100, default="", null=True)
+    descr = models.CharField(max_length=200, default="", blank=True, null=True)
+    camera = models.CharField(max_length=100, default="", null=True)
+    display = models.CharField(max_length=100, default="", null=True)
+    battery = models.CharField(max_length=100, default="", null=True)
+    features = models.JSONField(default=list)
     colors = models.ManyToManyField(Colors, blank=False)
+    condition = models.CharField(max_length=20, choices=[
+        ('New', 'New'),
+        ('Pre-owned', 'Pre-owned'),
+        ('Refurbished', 'Refurbished')
+    ])
+    rating = models.FloatField(default=0.0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    main_photo = models.ImageField(_("Image"),
+        upload_to='meida/',
+        default='items/logo.png')
 
     def __str__(self):
-        return self.title
+        return self.name

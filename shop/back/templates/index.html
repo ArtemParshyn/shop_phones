@@ -19,9 +19,9 @@
         <div class="header-top">
             <a href="{% url 'index'%}" class="logo">BOOST<span>MOBILE</span></a>
             <div class="nav-links">
-                <a href="#">New Phones</a>
-                <a href="#">Top Models</a>
-                <a href="#">FAQ</a>
+                <a href="{% url 'shop'%}">New Phones</a>
+                <a href="{% url 'top_models'%}">Top Models</a>
+                <a href="{% url 'faq'%}">FAQ</a>
                 <a href="#">Tickets</a>
             </div>
             <div class="header-actions">
@@ -41,7 +41,7 @@
             <h1>Premium Phones. Unbeatable Deals.</h1>
             <p>Upgrade to the latest smartphones with exclusive Boost Mobile offers and trade-in deals</p>
             <div class="hero-buttons">
-                <button class="btn">Shop New Releases</button>
+                <button onclick="location.href='{% url 'shop'%}'" class="btn">Shop New Releases</button>
             </div>
         </div>
     </section>

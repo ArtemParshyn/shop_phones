@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - Search Devices</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/shop.css' %}">
+
+    <style>
+        
+    </style>
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="#">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index'%}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="{% url 'shop'%}" style="color: var(--boost-orange);">New Phones</a>
+                <a href="{% url 'top_models'%}">Top Models</a>
+                <a href="{% url 'faq'%}">FAQ</a>
+                <a href="#">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <i class="fas fa-shopping-cart cart-icon"></i>
+                {% if auth %}
+                    <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
+                {% else %}
+                    <button class="login-btn" onclick="location.href='{% url 'login' %}'">Log in</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="search-page">
+        <div class="search-container">
+            <div class="search-header">
+                <h1>Search Devices</h1>
+                <p>Find your perfect phone from our premium selection</p>
+                
+                <div class="search-box">
+                    <div class="search-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search by brand, model, or feature...">
+                    </div>
+                    <button class="btn" id="searchButton">Search</button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-header">
+                    <h2><i class="fas fa-filter"></i> Filter Results</h2>
+                    <button class="btn" id="resetFilters" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Reset Filters</button>
+                </div>
+                
+                <div class="filter-grid">
+                    <!-- Brand Filter -->
+                    <div class="filter-group">
+                        <h3><i class="fas fa-mobile-alt"></i> Brand</h3>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input type="checkbox" id="apple" class="brand-filter" value="Apple">
+                                <label for="apple">Apple</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="samsung" class="brand-filter" value="Samsung">
+                                <label for="samsung">Samsung</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="google" class="brand-filter" value="Google">
+                                <label for="google">Google</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="oneplus" class="brand-filter" value="OnePlus">
+                                <label for="oneplus">OnePlus</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="motorola" class="brand-filter" value="Motorola">
+                                <label for="motorola">Motorola</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Price Filter -->
+                    <div class="filter-group">
+                        <h3><i class="fas fa-tag"></i> Price</h3>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input type="checkbox" id="price-1" class="price-filter" value="0-200">
+                                <label for="price-1">Under $200</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="price-2" class="price-filter" value="200-400">
+                                <label for="price-2">$200 - $400</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="price-3" class="price-filter" value="400-600">
+                                <label for="price-3">$400 - $600</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="price-4" class="price-filter" value="600-800">
+                                <label for="price-4">$600 - $800</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="price-5" class="price-filter" value="800">
+                                <label for="price-5">$800+</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Condition Filter -->
+                    <div class="filter-group">
+                        <h3><i class="fas fa-certificate"></i> Condition</h3>
+                        <div class="filter-options">
+                            <div class="filter-option">
+                                <input type="checkbox" id="condition-1" class="condition-filter" value="New">
+                                <label for="condition-1">New</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="condition-2" class="condition-filter" value="Pre-owned">
+                                <label for="condition-2">Pre-owned</label>
+                            </div>
+                            <div class="filter-option">
+                                <input type="checkbox" id="condition-3" class="condition-filter" value="Refurbished">
+                                <label for="condition-3">Refurbished</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <div class="results-count" id="resultsCount">Showing 0 results</div>
+                    <div class="sort-options">
+                        <label for="sort">Sort by:</label>
+                        <select id="sort">
+                            <option value="">---</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p>Loading devices...</p>
+                </div>
+                
+                <div class="phones-grid" id="resultsGrid">
+                    <!-- Results will be populated here by JavaScript -->
+                </div>
+                
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="#">Apple iPhone</a></li>
+                    <li><a href="#">Samsung Galaxy</a></li>
+                    <li><a href="#">Google Pixel</a></li>
+                    <li><a href="#">Motorola</a></li>
+                    <li><a href="#">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="#">Shop</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Top models</a></li>
+                    <li><a href="#">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Конфигурация
+        const API_URL = "devices";  // Замените на ваш API endpoint
+        const RESULTS_PER_PAGE = 6;
+        let currentPage = 1;
+        let totalResults = 0;
+        let activeFilters = {
+            brands: [],
+            priceRanges: [],
+            features: [],
+            conditions: []
+        };
+        
+        // DOM элементы
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const resultsCount = document.getElementById('resultsCount');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const pagination = document.getElementById('pagination');
+        const sortSelect = document.getElementById('sort');
+        
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Загрузка начальных данных
+            fetchDevices();
+            
+            // Обработчики событий
+            searchButton.addEventListener('click', () => {
+                currentPage = 1;
+                fetchDevices();
+            });
+            
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    currentPage = 1;
+                    fetchDevices();
+                }
+            });
+            
+            // Фильтры
+            document.querySelectorAll('.brand-filter, .price-filter, .condition-filter')
+                .forEach(filter => {
+                    filter.addEventListener('change', () => {
+                        currentPage = 1;
+                        updateActiveFilters();
+                        fetchDevices();
+                    });
+                });
+            
+            // Сортировка
+            sortSelect.addEventListener('change', () => {
+                currentPage = 1;
+                fetchDevices();
+            });
+            
+            // Сброс фильтров
+            document.getElementById('resetFilters').addEventListener('click', () => {
+                resetFilters();
+                fetchDevices();
+            });
+        });
+        
+        // Обновление активных фильтров
+        function updateActiveFilters() {
+            activeFilters = {
+                brands: [],
+                priceRanges: [],
+                features: [],
+                conditions: []
+            };
+            
+            // Бренды
+            document.querySelectorAll('.brand-filter:checked').forEach(checkbox => {
+                activeFilters.brands.push(checkbox.value);
+            });
+            
+            // Ценовые диапазоны
+            document.querySelectorAll('.price-filter:checked').forEach(checkbox => {
+                activeFilters.priceRanges.push(checkbox.value);
+            });
+        
+            // Состояние
+            document.querySelectorAll('.condition-filter:checked').forEach(checkbox => {
+                activeFilters.conditions.push(checkbox.value);
+            });
+            return activeFilters
+        }
+        
+        // Сброс всех фильтров
+        function resetFilters() {
+            // Сбросить чекбоксы
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Сбросить поиск
+            searchInput.value = "";
+            
+            // Сбросить сортировку
+            sortSelect.value = "popular";
+            
+            // Сбросить активные фильтры
+            activeFilters = {
+                brands: [],
+                priceRanges: [],
+                conditions: []
+            };
+            
+            currentPage = 1;
+        }
+        
+        // Получение устройств с сервера
+        async function fetchDevices() {
+            showLoading(true);
+            activeFilters =  updateActiveFilters()
+            const searchQuery = searchInput.value.trim();
+            const sortBy = sortSelect.value;
+            
+            try {
+                // Формируем параметры запроса
+                const params = new URLSearchParams({
+                    q: searchQuery,
+                    page: currentPage,
+                    limit: RESULTS_PER_PAGE,
+                    sort: sortBy,
+                    ...activeFilters
+                });
+                
+                // Отправляем запрос на сервер
+                const response = await fetch(`${API_URL}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Обработка успешного ответа
+                    totalResults = data.total;
+                    displayResults(data.devices);
+                    updatePagination();
+                    resultsCount.textContent = `Showing ${data.devices.length} of ${totalResults} results`;
+                } else {
+                    // Обработка ошибок сервера
+                    throw new Error(data.message || 'Failed to fetch devices');
+                }
+            } catch (error) {
+                // Обработка сетевых ошибок
+                console.error('Error fetching devices:', error);
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error loading devices</h3>
+                        <p>${error.message || 'Please try again later'}</p>
+                    </div>
+                `;
+                resultsCount.textContent = 'Showing 0 results';
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        // Отображение результатов
+        function displayResults(devices) {
+            resultsGrid.innerHTML = '';
+            
+            if (!devices || devices.length === 0) {
+                resultsGrid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>No devices found</h3>
+                        <p>Try adjusting your search or filters</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            devices.forEach(device => {
+                const deviceCard = document.createElement('div');
+                console.log(device)
+                //                        <div style="font-size: 3rem; color: #666;">📱</div>
+
+                deviceCard.className = 'phone-card';
+                deviceCard.innerHTML = `
+                    <div class="phone-image">
+                        <img src="${device.image}"></img>
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">${device.name}</div>
+                        <div class="phone-price">$${device.price}</div>
+                        
+                        <div class="phone-specs">
+                            <div class="spec-item"><i class="fas fa-microchip"></i> ${device.processor}</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i> ${device.camera}</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i> ${device.display}</div>
+                            <div class="spec-item"><i class="fas fa-battery-full"></i> ${device.battery}</div>
+                        </div>
+                        
+                        <button class="btn">View Details</button>
+                    </div>
+                `;
+                resultsGrid.appendChild(deviceCard);
+            });
+        }
+        
+        // Обновление пагинации
+        function updatePagination() {
+            const totalPages = Math.ceil(totalResults / RESULTS_PER_PAGE);
+            pagination.innerHTML = '';
+            
+            if (totalPages <= 1) return;
+            
+            // Кнопка "Назад"
+            const prevButton = document.createElement('div');
+            prevButton.className = `pagination-btn ${currentPage === 1 ? 'disabled' : ''}`;
+            prevButton.innerHTML = `<i class="fas fa-chevron-left"></i>`;
+            if (currentPage > 1) {
+                prevButton.addEventListener('click', () => changePage(currentPage - 1));
+            }
+            pagination.appendChild(prevButton);
+            
+            // Номера страниц
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('div');
+                pageButton.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                pageButton.textContent = i;
+                pageButton.addEventListener('click', () => changePage(i));
+                pagination.appendChild(pageButton);
+            }
+            
+            // Кнопка "Вперед"
+            const nextButton = document.createElement('div');
+            nextButton.className = `pagination-btn ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextButton.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+            if (currentPage < totalPages) {
+                nextButton.addEventListener('click', () => changePage(currentPage + 1));
+            }
+            pagination.appendChild(nextButton);
+        }
+        
+        // Смена страницы
+        function changePage(page) {
+            currentPage = page;
+            fetchDevices();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Показать/скрыть индикатор загрузки
+        function showLoading(show) {
+            loadingSpinner.style.display = show ? 'block' : 'none';
+        }
+        
+        // Инициализация данных (заглушка)
+        function initializeData() {
+            const devices = [
+                {
+                    id: 1,
+                    name: "Apple iPhone 15 Pro",
+                    price: 1099.99,
+                    processor: "A17 Bionic",
+                    camera: "Triple 48MP Cameras",
+                    display: "6.1\" Super Retina XDR",
+                    battery: "All-day battery"
+                },
+                {
+                    id: 2,
+                    name: "Samsung Galaxy S23",
+                    price: 799.99,
+                    processor: "Snapdragon 8 Gen 2",
+                    camera: "50MP Pro Camera",
+                    display: "6.1\" Dynamic AMOLED",
+                    battery: "3900mAh"
+                },
+                {
+                    id: 3,
+                    name: "Google Pixel 8",
+                    price: 699.99,
+                    processor: "Google Tensor G3",
+                    camera: "50MP Dual Camera",
+                    display: "6.2\" OLED Display",
+                    battery: "4575mAh"
+                },
+                {
+                    id: 4,
+                    name: "OnePlus 11 5G",
+                    price: 699.99,
+                    processor: "Snapdragon 8 Gen 2",
+                    camera: "Hasselblad Camera",
+                    display: "6.7\" 120Hz Display",
+                    battery: "5000mAh"
+                },
+                {
+                    id: 5,
+                    name: "Samsung Galaxy A54",
+                    price: 449.99,
+                    processor: "Exynos 1380",
+                    camera: "50MP Triple Camera",
+                    display: "6.4\" Super AMOLED",
+                    battery: "5000mAh"
+                },
+                {
+                    id: 6,
+                    name: "Apple iPhone SE (3rd Gen)",
+                    price: 429.99,
+                    processor: "A15 Bionic",
+                    camera: "12MP Camera",
+                    display: "4.7\" Retina HD",
+                    battery: "2018mAh"
+                }
+            ];
+            
+            displayResults(devices);
+            totalResults = devices.length;
+            resultsCount.textContent = `Showing ${devices.length} of ${devices.length} results`;
+            updatePagination();
+        }
+        
+        // Инициализация при загрузке
+        initializeData();
+    </script>
+</body>
+</html>

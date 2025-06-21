@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - {{ phone.name }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+    <link rel="stylesheet" href="{% static 'styles/shop.css' %}">
+    <style>
+        /* Дополнительные стили для страницы продукта */
+        .product-page {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumbs {
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .breadcrumbs a {
+            color: var(--boost-blue);
+            text-decoration: none;
+        }
+        
+        .breadcrumbs a:hover {
+            text-decoration: underline;
+        }
+        
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+        
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .main-image {
+            background-color: var(--bg-gray);
+            border-radius: 8px;
+            height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .main-image img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        
+        .product-info {
+            padding: 1rem 0;
+        }
+        
+        .product-brand {
+            color: var(--boost-blue);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+        }
+        
+        .product-name {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+        
+        .product-price {
+            font-size: 1.8rem;
+            color: var(--boost-orange);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-condition {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background-color: var(--promo-green);
+            color: white;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .product-colors {
+            margin: 1.5rem 0;
+        }
+        
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .color-option.active {
+            border-color: var(--boost-blue);
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--boost-blue);
+        }
+        
+        .color-option .color-name {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            display: none;
+        }
+        
+        .color-option:hover .color-name {
+            display: block;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .add-to-cart {
+            flex-grow: 1;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .wishlist-btn {
+            background-color: white;
+            color: var(--boost-blue);
+            border: 1px solid var(--boost-blue);
+            padding: 1rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .wishlist-btn:hover {
+            background-color: var(--boost-blue);
+            color: white;
+        }
+        
+        .wishlist-btn.active {
+            background-color: var(--boost-blue);
+            color: white;
+        }
+        
+        .wishlist-btn.active i {
+            color: var(--boost-orange);
+        }
+        
+        .product-specs {
+            margin: 2rem 0;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .spec-card {
+            background-color: var(--bg-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .spec-title {
+            color: var(--boost-blue);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .spec-title i {
+            margin-right: 0.8rem;
+            color: var(--boost-orange);
+        }
+        
+        .spec-list {
+            list-style: none;
+        }
+        
+        .spec-list li {
+            margin-bottom: 0.6rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .spec-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--boost-blue);
+        }
+        
+        .related-products {
+            margin-top: 4rem;
+            border-top: 1px solid #eee;
+            padding-top: 3rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--boost-blue);
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--boost-orange);
+        }
+        
+        @media (max-width: 768px) {
+            .main-image {
+                height: 300px;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+            
+            .wishlist-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="{% url 'shop' %}">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index'%}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="{% url 'shop'%}">New Phones</a>
+                <a href="{% url 'top_models'%}">Top Models</a>
+                <a href="{% url 'faq'%}">FAQ</a>
+                <a href="{% url 'tickets'%}">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'cart' %}" class="cart-icon-link">
+                    <i class="fas fa-shopping-cart cart-icon"></i>
+                    <span class="cart-count"></span>
+                </a>
+                {% if auth %}
+                    <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
+                {% else %}
+                    <button class="login-btn" onclick="location.href='{% url 'login' %}'">Log in</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Details -->
+    <main class="product-page">
+        <div class="breadcrumbs">
+            <a href="{% url 'index' %}">Home</a> > 
+            <a href="{% url 'shop' %}">Phones</a> > 
+            <span>{{ phone.name }}</span>
+        </div>
+        
+        <div class="product-container">
+            <div class="product-gallery">
+                <div class="main-image">
+                    {% if phone.image %}
+                        <img src="{{ phone.image }}" alt="{{ phone.name }}">
+                    {% else %}
+                        <div style="font-size: 5rem; color: #ccc;">📱</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="product-info">
+                <div class="product-brand">{{ phone.brand }}</div>
+                <h1 class="product-name">{{ phone.name }}</h1>
+                
+                <div class="product-price">${{ phone.price }}</div>
+                
+                <div class="product-condition">
+                    {{ phone.condition }}
+                </div>
+                
+                {% if phone.descr %}
+                <p>{{ phone.descr }}</p>
+                {% endif %}
+                
+                <div class="product-colors">
+                    <h3>Available Colors:</h3>
+                    <div class="color-options">
+                        {% for color in phone.colors.all %}
+                        <div class="color-option" 
+                             style="background-color: #{{ color.hex }}"
+                             data-color="{{ color.title }}">
+                            <span class="color-name">{{ color.title }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="product-actions">
+                    <button class="btn add-to-cart-btn" 
+                            data-id="{{ phone.id }}" 
+                            data-name="{{ phone.name }}"
+                            data-price="{{ phone.price }}"
+                            data-image="{% if phone.image %}{{ phone.image }}{% endif %}">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <div class="wishlist-btn" onclick="toggleWishlist()">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+        
+        <div class="product-specs">
+            <h2 class="section-title">Technical Specifications</h2>
+            <div class="specs-grid">
+                {% if phone.processor %}
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <i class="fas fa-microchip"></i> Performance
+                    </div>
+                    <ul class="spec-list">
+                        <li><strong>Processor:</strong> {{ phone.processor }}</li>
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if phone.camera %}
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <i class="fas fa-camera"></i> Camera
+                    </div>
+                    <ul class="spec-list">
+                        <li><strong>Camera System:</strong> {{ phone.camera }}</li>
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if phone.display %}
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <i class="fas fa-mobile-alt"></i> Display
+                    </div>
+                    <ul class="spec-list">
+                        <li><strong>Display:</strong> {{ phone.display }}</li>
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if phone.battery %}
+                <div class="spec-card">
+                    <div class="spec-title">
+                        <i class="fas fa-battery-full"></i> Battery
+                    </div>
+                    <ul class="spec-list">
+                        <li><strong>Battery:</strong> {{ phone.battery }}</li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if related_products %}
+        <div class="related-products">
+            <h2 class="section-title">Related Phones</h2>
+            <div class="phones-grid">
+                {% for product in related_products %}
+                <div class="phone-card">
+                    <div class="phone-image">
+                        {% if product.image %}
+                            <img src="{{ product.image }}" alt="{{ product.name }}">
+                        {% else %}
+                            <div style="font-size: 3rem; color: #666;">📱</div>
+                        {% endif %}
+                    </div>
+                    <div class="phone-details">
+                        <div class="phone-name">{{ product.name }}</div>
+                        <div class="phone-price">${{ product.price }}</div>
+                        <button class="btn" onclick="location.href='/detailed/{{product.id}}'">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Apple iPhone</a></li>
+                    <li><a href="{% url 'shop'%}">Samsung Galaxy</a></li>
+                    <li><a href="{% url 'shop'%}">Google Pixel</a></li>
+                    <li><a href="{% url 'shop'%}">Motorola</a></li>
+                    <li><a href="{% url 'shop'%}">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Shop</a></li>
+                    <li><a href="{% url 'faq'%}">FAQ</a></li>
+                    <li><a href="{% url 'top_models'%}">Top models</a></li>
+                    <li><a href="{% url 'tickets'%}">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Инициализация корзины в localStorage
+        function initCart() {
+            if (!localStorage.getItem('boost_cart')) {
+                localStorage.setItem('boost_cart', JSON.stringify([]));
+            }
+        }
+
+        // Получение корзины
+        function getCart() {
+            const cartJSON = localStorage.getItem('boost_cart');
+            return cartJSON ? JSON.parse(cartJSON) : [];
+        }
+
+        // Сохранение корзины
+        function saveCart(cart) {
+            localStorage.setItem('boost_cart', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        // Обновление счетчика в хедере
+        function updateCartCount() {
+            const cart = getCart();
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+            document.querySelectorAll('.cart-count').forEach(el => {
+                el.textContent = totalItems;
+                el.style.display = totalItems > 0 ? 'flex' : 'none';
+            });
+        }
+
+        // Показать уведомление
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.innerHTML = `
+            <div style="position: fixed; bottom: 20px; right: 20px; background: var(--boost-orange); color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; display: flex; align-items: center;">
+                <i class="fas fa-check-circle" style="margin-right: 10px; font-size: 1.2rem;"></i>
+                <span>${message}</span>
+            </div>
+        `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.5s';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 500);
+            }, 3000);
+        }
+
+        // Добавление товара в корзину
+        function addToCart(device) {
+            const cart = getCart();
+
+            // Генерируем уникальный ID, если его нет
+            if (!device.id) {
+                device.id = 'device_' + Date.now() + Math.random().toString(36).substr(2, 9);
+            }
+
+            const existingItemIndex = cart.findIndex(item => item.id === device.id);
+
+            if (existingItemIndex >= 0) {
+                cart[existingItemIndex].quantity = (cart[existingItemIndex].quantity || 1) + 1;
+            } else {
+                device.quantity = 1;
+                cart.push(device);
+            }
+
+            saveCart(cart);
+            showNotification(`${device.name} added to cart!`);
+        }
+
+        // Функции для работы с избранным
+        function toggleWishlist() {
+            const wishlistBtn = document.querySelector('.wishlist-btn');
+            const isActive = wishlistBtn.classList.contains('active');
+            
+            if (isActive) {
+                wishlistBtn.classList.remove('active');
+                wishlistBtn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                wishlistBtn.classList.add('active');
+                wishlistBtn.innerHTML = '<i class="fas fa-heart"></i>';
+            }
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            initCart();
+            updateCartCount();
+
+            // Обработчики для кнопок "Add to Cart"
+            document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const selectedColor = document.querySelector('.color-option.active')?.dataset.color || '';
+                    const device = {
+                        id: this.dataset.id,
+                        name: this.dataset.name,
+                        price: parseFloat(this.dataset.price) || 0,
+                        image: this.dataset.image,
+                        color: selectedColor
+                    };
+                    addToCart(device);
+                });
+            });
+
+            // Инициализация цветов
+            document.querySelectorAll('.color-option').forEach((color, index) => {
+                if (index === 0) color.classList.add('active');
+                
+                color.addEventListener('click', function() {
+                    document.querySelectorAll('.color-option').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Инициализация рейтинга
+            const rating = parseFloat("{{ phone.rating }}");
+            if (rating > 0) {
+                const ratingElement = document.createElement('div');
+                ratingElement.className = 'product-rating';
+                ratingElement.innerHTML = `
+                    <div style="display: flex; align-items: center; margin: 1rem 0;">
+                        <div style="color: gold; font-size: 1.2rem;">
+                            ${'★'.repeat(Math.round(rating))}${'☆'.repeat(5 - Math.round(rating))}
+                        </div>
+                        <span style="margin-left: 0.5rem; font-weight: bold;">${rating.toFixed(1)}/5.0</span>
+                    </div>
+                `;
+                document.querySelector('.product-info').insertBefore(
+                    ratingElement, 
+                    document.querySelector('.product-actions')
+                );
+            }
+        });
+    </script>
+</body>
+</html>

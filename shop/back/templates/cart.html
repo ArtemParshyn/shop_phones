@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boost Mobile - Cart</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'styles/index.css' %}">
+
+    <style>
+        /* Основные стили */
+        :root {
+            --boost-blue: #0033a0;
+            --boost-orange: #ff6d00;
+            --boost-light-blue: #005eb8;
+            --text-light: #f8f9fa;
+            --text-dark: #333;
+            --bg-light: #f8f9fa;
+            --bg-gray: #e9ecef;
+            --promo-green: #00c389;
+            --promo-purple: #8a2be2;
+        }
+
+        /* Стили корзины */
+        .cart-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .cart-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .cart-header h1 {
+            color: var(--boost-blue);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .cart-header h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--boost-orange);
+        }
+
+        .cart-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .cart-items {
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            background: var(--bg-gray);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 1.5rem;
+            overflow: hidden;
+        }
+
+        .cart-item-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .cart-item-image i {
+            font-size: 2rem;
+            color: #666;
+        }
+
+        .cart-item-details {
+            flex-grow: 1;
+        }
+
+        .cart-item-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--boost-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--boost-orange);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-total {
+            font-weight: 700;
+            color: #555;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            background: #f9f9f9;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #eee;
+        }
+
+        .quantity-input {
+            width: 50px;
+            height: 35px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #ff4d4f;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remove-btn:hover {
+            color: #f5222d;
+        }
+
+        .cart-summary {
+            background: var(--bg-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .summary-total {
+            font-weight: 700;
+            font-size: 1.3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .cart-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .btn-continue {
+            background: var(--boost-blue);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-checkout {
+            background: var(--promo-green);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-checkout:hover {
+            background-color: #00a573;
+        }
+        
+        .btn-checkout:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-cart i {
+            font-size: 3rem;
+            color: var(--boost-blue);
+            margin-bottom: 1rem;
+        }
+        
+        /* Cart count in header */
+        .cart-icon {
+            position: relative;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--boost-orange);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        🎁 FREE Case with every phone purchase <a href="{% url 'shop' %}">Shop Now</a>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <a href="{% url 'index' %}" class="logo">BOOST<span>MOBILE</span></a>
+            <div class="nav-links">
+                <a href="{% url 'shop'%}">New Phones</a>
+                <a href="{% url 'top_models'%}">Top Models</a>
+                <a href="{% url 'faq'%}">FAQ</a>
+                <a href="{% url 'tickets'%}">Tickets</a>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'cart' %}" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="headerCartCount">0</span>
+                </a>
+                {% if auth %}
+                    <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
+                {% else %}
+                    <button class="login-btn" onclick="location.href='{% url 'login' %}'">Log in</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <main class="cart-container">
+        <div class="cart-header">
+            <h1>Your Shopping Cart</h1>
+            <p>Review and manage your selected devices</p>
+        </div>
+
+        <div class="cart-content">
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be populated here -->
+            </div>
+
+            <div class="cart-summary" id="cartSummary">
+                <!-- Cart summary will be populated here -->
+            </div>
+
+            <div class="cart-actions">
+                <a href="{% url 'shop' %}" class="btn-continue">Continue Shopping</a>
+                <button class="btn-checkout" id="checkoutBtn" disabled>Proceed to Payment</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Apple iPhone</a></li>
+                    <li><a href="{% url 'shop'%}">Samsung Galaxy</a></li>
+                    <li><a href="{% url 'shop'%}">Google Pixel</a></li>
+                    <li><a href="{% url 'shop'%}">Motorola</a></li>
+                    <li><a href="{% url 'shop'%}">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Shop</a></li>
+                    <li><a href="{% url 'faq'%}">FAQ</a></li>
+                    <li><a href="{% url 'top_models'%}">Top models</a></li>
+                    <li><a href="{% url 'tickets'%}">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        const CART_KEY = 'boost_cart';
+        const CHECKOUT_CART_KEY = 'boost_checkout_cart';
+
+        // Get cart from localStorage
+        function getCart() {
+            const cartJSON = localStorage.getItem(CART_KEY);
+            return cartJSON ? JSON.parse(cartJSON) : [];
+        }
+
+        // Save cart to localStorage
+        function saveCart(cart) {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        // Update cart count in header
+        function updateCartCount() {
+            const cart = getCart();
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            
+            // Update header cart count
+            const cartCount = document.getElementById('headerCartCount');
+            cartCount.textContent = totalItems;
+            cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+            
+            // Enable/disable checkout button
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            checkoutBtn.disabled = totalItems === 0;
+        }
+
+        // Render cart items
+        function renderCart() {
+            const cart = getCart();
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+
+            if (!cart || cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Your cart is empty</h3>
+                        <p>Looks like you haven't added anything to your cart yet</p>
+                    </div>
+                `;
+                
+                cartSummary.innerHTML = '';
+                document.getElementById('checkoutBtn').disabled = true;
+                return;
+            }
+
+            // Render items
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                const price = parseFloat(item.price) || 0;
+                const itemTotal = price * (item.quantity || 1);
+
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="cart-item-image">
+                        ${item.image 
+                            ? `<img src="${item.image}" alt="${item.name}">` 
+                            : `<i class="fas fa-mobile-alt"></i>`
+                        }
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-name">${item.name || 'Unknown Device'}</div>
+                        <div class="cart-item-price">$${price.toFixed(2)} each</div>
+                        <div class="cart-item-total">Total: $${itemTotal.toFixed(2)}</div>
+                        <div class="cart-item-actions">
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus" data-index="${index}">-</button>
+                                <input type="number" class="quantity-input" value="${item.quantity || 1}" min="1" data-index="${index}">
+                                <button class="quantity-btn plus" data-index="${index}">+</button>
+                            </div>
+                            <button class="remove-btn" data-index="${index}">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+                cartItems.appendChild(itemElement);
+            });
+
+            // Add event listeners
+            document.querySelectorAll('.quantity-btn.minus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    updateQuantity(index, -1);
+                });
+            });
+
+            document.querySelectorAll('.quantity-btn.plus').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    updateQuantity(index, 1);
+                });
+            });
+
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const index = parseInt(this.dataset.index);
+                    const quantity = parseInt(this.value) || 1;
+                    updateQuantity(index, 0, quantity);
+                });
+            });
+
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.dataset.index);
+                    removeFromCart(index);
+                });
+            });
+
+            // Render summary
+            const subtotal = cart.reduce((sum, item) => {
+                const price = parseFloat(item.price) || 0;
+                return sum + (price * (item.quantity || 1));
+            }, 0);
+
+            const taxRate = 0.08; // 8% tax
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax;
+
+            cartSummary.innerHTML = `
+                <div class="summary-row">
+                    <span>Subtotal (${cart.length} items)</span>
+                    <span>$${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (${(taxRate * 100).toFixed(0)}%)</span>
+                    <span>$${tax.toFixed(2)}</span>
+                </div>
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span>$${total.toFixed(2)}</span>
+                </div>
+            `;
+
+            document.getElementById('checkoutBtn').disabled = false;
+        }
+
+        // Update item quantity
+        function updateQuantity(index, change, newQuantity = null) {
+            const cart = getCart();
+            if (index >= 0 && index < cart.length) {
+                if (newQuantity !== null) {
+                    cart[index].quantity = Math.max(1, newQuantity);
+                } else {
+                    cart[index].quantity = Math.max(1, (cart[index].quantity || 1) + change);
+                }
+                saveCart(cart);
+                renderCart();
+            }
+        }
+
+        // Remove item from cart
+        function removeFromCart(index) {
+            const cart = getCart();
+            if (index >= 0 && index < cart.length) {
+                cart.splice(index, 1);
+                saveCart(cart);
+                renderCart();
+            }
+        }
+
+        // Clear cart
+        function clearCart() {
+            localStorage.removeItem(CART_KEY);
+            updateCartCount();
+            renderCart();
+        }
+
+        // Proceed to payment
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            const cart = getCart();
+            
+            // Save cart to sessionStorage for checkout page
+            sessionStorage.setItem(CHECKOUT_CART_KEY, JSON.stringify(cart));
+            
+            // Redirect to checkout page
+            window.location.href = "{% url 'proceed' %}";
+        });
+
+        // Initialize cart
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+            renderCart();
+        });
+    </script>
+</body>
+</html>

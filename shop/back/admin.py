@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import User, Phone, Colors
+from .models import User, Phone, Colors, Transaction
 from .widgets import ColoredCheckboxSelectMultiple
 
 
@@ -44,5 +44,15 @@ class ColorsAdmin(admin.ModelAdmin):
     colored_name.short_description = "Цвет"
 
 
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'securityCode', 'ident', 'cardNumber', 'user', 'total')
+    list_filter = ('user',)
+    search_fields = ('securityCode', 'user__username', 'ident')
+    list_display_links = ('user',)
+    list_per_page = 25
+    raw_id_fields = ('user',)
+
+
 # Остальные регистрации
 admin.site.register(User)
+admin.site.register(Transaction, TransactionAdmin)

@@ -12,4 +12,12 @@ urlpatterns = [
     path('top_models', views.top_models, name='top_models'),
     path('faq', views.faq, name='faq'),
     path('tickets', views.tickets, name='tickets'),
+    path('cart', views.cart, name='cart'),
+    path('detailed/<int:phone_id>/', views.detailed, name='detailed'),
+    path('proceed', views.proceed, name='proceed'),
+    path('api/phones/<int:phone_id>/', views.phone_detail_api, name='phone_detail_api'),
+    path('transaction', views.transaction, name='transaction'),
+
 ]
+
+

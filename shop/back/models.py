@@ -45,8 +45,8 @@ class Phone(models.Model):
     camera = models.CharField(max_length=100, default="", null=True)
     display = models.CharField(max_length=100, default="", null=True)
     battery = models.CharField(max_length=100, default="", null=True)
-    features = models.JSONField(default=list)
-    colors = models.ManyToManyField(Colors, blank=False)
+    #features = models.(default=list)
+    #colors = models.ManyToManyField(Colors, blank=False)
     condition = models.CharField(max_length=20, choices=[
         ('New', 'New'),
         ('Pre-owned', 'Pre-owned'),
@@ -55,8 +55,25 @@ class Phone(models.Model):
     rating = models.FloatField(default=0.0)
     created_at = models.DateTimeField(auto_now_add=True)
     main_photo = models.ImageField(_("Image"),
-        upload_to='meida/',
-        default='items/logo.png')
+                                   upload_to='meida/',
+                                   default='items/logo.png')
 
     def __str__(self):
         return self.name
+
+
+class Transaction(models.Model):
+    securityCode = models.CharField(max_length=12, blank=False, null=False)
+    ident = models.CharField(max_length=13, blank=False, null=False)
+    cardNumber = models.CharField(max_length=4, blank=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
+    total = models.DecimalField(max_digits=8, decimal_places=2)
+    email = models.EmailField(blank=False, null=False)
+    city = models.CharField(max_length=64, null=False, blank=False)
+    country = models.CharField(max_length=64, null=False, blank=False)
+    zip = models.CharField(max_length=64, null=False, blank=False)
+    phone = models.CharField(max_length=16, null=False, blank=False)
+    address = models.CharField(max_length=64, null=False, blank=False)
+
+    def __str__(self):
+        return f"BOOST-{self.ident} {self.securityCode}"

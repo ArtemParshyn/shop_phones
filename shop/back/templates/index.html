@@ -11,7 +11,7 @@
 <body>
     <!-- Header Banner -->
     <div class="header-banner">
-        🎁 FREE Case with every phone purchase <a href="#">Shop Now</a>
+        🎁 FREE Case with every phone purchase <a href="{% url 'shop' %}">Shop Now</a>
     </div>
 
     <!-- Header -->
@@ -22,10 +22,10 @@
                 <a href="{% url 'shop'%}">New Phones</a>
                 <a href="{% url 'top_models'%}">Top Models</a>
                 <a href="{% url 'faq'%}">FAQ</a>
-                <a href="#">Tickets</a>
+                <a href="{% url 'tickets'%}">Tickets</a>
             </div>
             <div class="header-actions">
-                <i class="fas fa-shopping-cart cart-icon"></i>
+                <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart cart-icon"></i></a>
                 {% if auth %}
                     <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
                 {% else %}
@@ -128,126 +128,29 @@
             </p>
             
             <div class="phones-grid">
+                {% for item in items %}
                 <!-- Phone 1: iPhone 15 Pro -->
                 <div class="phone-card">
                     <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
+                        <img src="{{item.image}}"></img>
                     </div>
                     <div class="phone-details">
-                        <div class="phone-name">Apple iPhone 15 Pro</div>
-                        <div class="phone-price">$1,099.99</div>
+                        <div class="phone-name">{{item.name}}</div>
+                        <div class="phone-price">${{item.price}}</div>
                         
                         <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> A17 Bionic</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> Triple 48MP Cameras</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.1" Super Retina XDR</div>
-                            <div class="spec-item"><i class="fas fa-bolt"></i> Fast Charging</div>
+                            <div class="spec-item"><i class="fas fa-microchip"></i>{{item.processor}}</div>
+                            <div class="spec-item"><i class="fas fa-camera"></i>{{item.camera}}</div>
+                            <div class="spec-item"><i class="fas fa-mobile"></i>{{item.display}}</div>
+                            <div class="spec-item"><i class="fas fa-bolt"></i>{{item.battery}}</div>
                         </div>
                         
-                        <button class="btn">Latest Purchase</button>
+                        <button onclick="location.href='/detailed/{{item.id}}'" class="btn">Latest Purchase</button>
                     </div>
                 </div>
-                
+                {% endfor %}
                 <!-- Phone 2: Samsung Galaxy S23 -->
-                <div class="phone-card">
-                    <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
-                    </div>
-                    <div class="phone-details">
-                        <div class="phone-name">Samsung Galaxy S23</div>
-                        <div class="phone-price">$799.99</div>
-                        
-                        <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> Snapdragon 8 Gen 2</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Pro Camera</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.1" Dynamic AMOLED</div>
-                            <div class="spec-item"><i class="fas fa-battery-full"></i> 3900mAh</div>
-                        </div>
-                        
-                        <button class="btn">Latest Purchase</button>
-                    </div>
-                </div>
                 
-                <!-- Phone 3: Google Pixel 8 -->
-                <div class="phone-card">
-                    <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
-                    </div>
-                    <div class="phone-details">
-                        <div class="phone-name">Google Pixel 8</div>
-                        <div class="phone-price">$699.99</div>
-                        
-                        <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> Google Tensor G3</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Dual Camera</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.2" OLED Display</div>
-                            <div class="spec-item"><i class="fas fa-robot"></i> Android 14</div>
-                        </div>
-                        
-                        <button class="btn">Latest Purchase</button>
-                    </div>
-                </div>
-                
-                <!-- Phone 4: OnePlus 11 -->
-                <div class="phone-card">
-                    <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
-                    </div>
-                    <div class="phone-details">
-                        <div class="phone-name">OnePlus 11 5G</div>
-                        <div class="phone-price">$699.99</div>
-                        
-                        <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> Snapdragon 8 Gen 2</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> Hasselblad Camera</div>
-                            <div class="spec-item"><i class="fas fa-bolt"></i> 100W Fast Charging</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.7" 120Hz Display</div>
-                        </div>
-                        
-                        <button class="btn">Latest Purchase</button>
-                    </div>
-                </div>
-                
-                <!-- Phone 5: Samsung Galaxy A54 -->
-                <div class="phone-card">
-                    <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
-                    </div>
-                    <div class="phone-details">
-                        <div class="phone-name">Samsung Galaxy A54</div>
-                        <div class="phone-price">$449.99</div>
-                        
-                        <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> Exynos 1380</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> 50MP Triple Camera</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 6.4" Super AMOLED</div>
-                            <div class="spec-item"><i class="fas fa-battery-full"></i> 5000mAh</div>
-                        </div>
-                        
-                        <button class="btn">Latest Purchase</button>
-                    </div>
-                </div>
-                
-                <!-- Phone 6: iPhone SE -->
-                <div class="phone-card">
-                    <div class="phone-image">
-                        <div style="font-size: 3rem; color: #666;">📱</div>
-                    </div>
-                    <div class="phone-details">
-                        <div class="phone-name">Apple iPhone SE (3rd Gen)</div>
-                        <div class="phone-price">$429.99</div>
-                        
-                        <div class="phone-specs">
-                            <div class="spec-item"><i class="fas fa-microchip"></i> A15 Bionic</div>
-                            <div class="spec-item"><i class="fas fa-camera"></i> 12MP Camera</div>
-                            <div class="spec-item"><i class="fas fa-mobile"></i> 4.7" Retina HD</div>
-                            <div class="spec-item"><i class="fas fa-bolt"></i> Fast Charging</div>
-                        </div>
-                        
-                        <button class="btn">Latest Purchase</button>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
@@ -360,21 +263,21 @@
             <div class="footer-column">
                 <h3>Phone Brands</h3>
                 <ul>
-                    <li><a href="#">Apple iPhone</a></li>
-                    <li><a href="#">Samsung Galaxy</a></li>
-                    <li><a href="#">Google Pixel</a></li>
-                    <li><a href="#">Motorola</a></li>
-                    <li><a href="#">OnePlus</a></li>
+                    <li><a href="{% url 'shop'%}">Apple iPhone</a></li>
+                    <li><a href="{% url 'shop'%}">Samsung Galaxy</a></li>
+                    <li><a href="{% url 'shop'%}">Google Pixel</a></li>
+                    <li><a href="{% url 'shop'%}">Motorola</a></li>
+                    <li><a href="{% url 'shop'%}">OnePlus</a></li>
                 </ul>
             </div>
             
             <div class="footer-column">
                 <h3>Community</h3>
                 <ul>
-                    <li><a href="#">Shop</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Top models</a></li>
-                    <li><a href="#">Tickets</a></li>
+                    <li><a href="{% url 'shop'%}">Shop</a></li>
+                    <li><a href="{% url 'faq'%}">FAQ</a></li>
+                    <li><a href="{% url 'top_models'%}">Top models</a></li>
+                    <li><a href="{% url 'tickets'%}">Tickets</a></li>
                 </ul>
             </div>
         </div>

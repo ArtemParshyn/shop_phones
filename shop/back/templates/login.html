@@ -11,7 +11,7 @@
 <body>
     <!-- Header Banner -->
     <div class="header-banner">
-        🎁 FREE Case with every phone purchase <a href="#">Shop Now</a>
+        🎁 FREE Case with every phone purchase <a href="{% url 'shop' %}">Shop Now</a>
     </div>
 
     <!-- Header -->
@@ -22,10 +22,10 @@
                 <a href="{% url 'shop'%}">New Phones</a>
                 <a href="{% url 'top_models'%}">Top Models</a>
                 <a href="{% url 'faq'%}">FAQ</a>
-                <a href="#">Tickets</a>
+                <a href="{% url 'tickets'%}">Tickets</a>
             </div>
             <div class="header-actions">
-                <i class="fas fa-shopping-cart cart-icon"></i>
+                <a href="{% url 'cart' %}"><i class="fas fa-shopping-cart cart-icon"></i></a>
                 {% if auth %}
                     <button class="login-btn" onclick="location.href='{% url 'profile' %}'">My Account</button>
                 {% else %}
@@ -100,7 +100,33 @@
 
     <!-- Footer -->
     <footer>
-        <!-- Footer content same as before -->
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>Phone Brands</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Apple iPhone</a></li>
+                    <li><a href="{% url 'shop'%}">Samsung Galaxy</a></li>
+                    <li><a href="{% url 'shop'%}">Google Pixel</a></li>
+                    <li><a href="{% url 'shop'%}">Motorola</a></li>
+                    <li><a href="{% url 'shop'%}">OnePlus</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Community</h3>
+                <ul>
+                    <li><a href="{% url 'shop'%}">Shop</a></li>
+                    <li><a href="{% url 'faq'%}">FAQ</a></li>
+                    <li><a href="{% url 'top_models'%}">Top models</a></li>
+                    <li><a href="{% url 'tickets'%}">Tickets</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Boost Mobile. All rights reserved. <a href="#" style="color: #aaa; text-decoration: underline;">Terms & Conditions</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Privacy Policy</a> | <a href="#" style="color: #aaa; text-decoration: underline;">Accessibility</a></p>
+            <p style="margin-top: 1rem;">Boost Mobile is a part of DISH Wireless</p>
+        </div>
     </footer>
 
     <script>
